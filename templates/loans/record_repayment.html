@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block title %}Record Repayment | Anchor Crest Consult{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+                <h5 class="mb-0"><i class="bi bi-cash-coin me-2"></i>Record Loan Repayment</h5>
+                <a href="{% url 'loan_list' %}" class="btn btn-sm btn-outline-light">Back to Portfolio</a>
+            </div>
+            <div class="card-body p-4">
+                <div class="mb-3 p-3 bg-light rounded border">
+                    <p class="mb-1"><strong>Client:</strong> {{ loan.client.first_name }} {{ loan.client.last_name }}</p>
+                    <p class="mb-1"><strong>Loan Reference:</strong> #{{ loan.id }}</p>
+                    <p class="mb-0"><strong>Requested Amount:</strong> GHS {{ loan.amount_requested }}</p>
+                </div>
+
+                <form method="post" action="{% url 'record_repayment' loan.id %}">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="amount_paid" class="form-label font-weight-bold">Amount Paid (GHS)</label>
+                        <input type="number" step="0.01" name="amount_paid" id="amount_paid" class="form-control" placeholder="e.g. 250.00" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="notes" class="form-label">Payment Notes / Receipt Ref</label>
+                        <input type="text" name="notes" id="notes" class="form-control" placeholder="e.g. Cash payment, Receipt #0042">
+                    </div>
+
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a href="{% url 'loan_list' %}" class="btn btn-secondary me-md-2">Cancel</a>
+                        <button type="submit" class="btn btn-success"><i class="bi bi-check-circle-fill me-1"></i> Save Payment</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

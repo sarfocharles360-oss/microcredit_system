@@ -1,0 +1,131 @@
+﻿{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4" style="max-width: 650px;">
+    <div class="card shadow-sm border-0 p-4">
+        <h3 class="text-primary font-weight-bold mb-4">Register New Borrower</h3>
+
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <div class="mb-3">
+                <label for="first_name" class="form-label fw-bold">First name</label>
+                <input type="text" name="first_name" id="first_name" class="form-control" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="last_name" class="form-label fw-bold">Last name</label>
+                <input type="text" name="last_name" id="last_name" class="form-control" required>
+            </div>
+
+            <!-- Phone Number Field (Strict 10-digit numbers only) -->
+            <div class="mb-3">
+                <label for="phone_number" class="form-label fw-bold">Phone number</label>
+                <input type="tel" 
+                       name="phone_number" 
+                       id="phone_number" 
+                       class="form-control" 
+                       placeholder="024XXXXXXX" 
+                       pattern="[0-9]{10}" 
+                       minlength="10" 
+                       maxlength="10" 
+                       oninput="this.value = this.value.replace(/[^0-9]/g, '');"
+                       title="Phone number must be exactly 10 digits" 
+                       required>
+                <small class="text-muted">Must be a valid 10-digit phone number (numbers only).</small>
+            </div>
+
+            <div class="mb-3">
+                <label for="email" class="form-label fw-bold">Email</label>
+                <input type="email" name="email" id="email" class="form-control">
+            </div>
+
+            <!-- Single Ghana Card ID Number Field -->
+            <div class="mb-3">
+                <label for="id_number" class="form-label fw-bold">Id number</label>
+                <input type="text" 
+                       name="id_number" 
+                       id="id_number" 
+                       class="form-control" 
+                       placeholder="GHA-123456789-0" 
+                       pattern="^GHA-\d{9}-\d$" 
+                       maxlength="15" 
+                       oninput="formatGhanaCard(this)" 
+                       title="Format must be exactly GHA-XXXXXXXXX-X (e.g., GHA-123456789-0)" 
+                       required>
+                <small class="text-muted">Must follow the official Ghana Card format: GHA-XXXXXXXXX-X</small>
+            </div>
+
+            <!-- Ghana Card Image Upload Field -->
+            <div class="mb-3">
+                <label for="ghana_card_image" class="form-label fw-bold">Ghana Card Copy (Photo/Scan)</label>
+                <input type="file" name="ghana_card_image" id="ghana_card_image" class="form-control" accept="image/*,.pdf" required>
+                <small class="text-muted">Upload a clear photo or scanned copy of the Ghana Card.</small>
+            </div>
+
+            <div class="mb-3">
+                <label for="address" class="form-label fw-bold">Address</label>
+                <textarea name="address" id="address" class="form-control" rows="3" placeholder="Click 'Detect Current GPS Location' or type address..."></textarea>
+                <button type="button" class="btn btn-outline-info btn-sm mt-2" onclick="getLocation()">Detect Current Location</button>
+            </div>
+
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-success fw-bold px-4">Save Client</button>
+                <a href="{% url 'client_list' %}" class="btn btn-secondary fw-bold px-4">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+// Geolocation Functions
+function getLocation() {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(showPosition, showError);
+    } else {
+        alert("Geolocation is not supported by this browser.");
+    }
+}
+
+function showPosition(position) {
+    const lat = position.coords.latitude;
+    const lon = position.coords.longitude;
+    const addressField = document.getElementById('address');
+    addressField.value = `Latitude: ${lat}, Longitude: ${lon}`;
+}
+
+function showError(error) {
+    switch(error.code) {
+        case error.PERMISSION_DENIED:
+            alert("User denied the request for Geolocation.");
+            break;
+        case error.POSITION_UNAVAILABLE:
+            alert("Location information is unavailable.");
+            break;
+        case error.TIMEOUT:
+            alert("The request to get user location timed out.");
+            break;
+        case error.UNKNOWN_ERROR:
+            alert("An unknown error occurred.");
+            break;
+    }
+}
+
+// Ghana Card Auto-Formatting Function
+function formatGhanaCard(input) {
+    let value = input.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+
+    if (value.length >= 3 && !value.startsWith('GHA')) {
+        value = 'GHA' + value.replace(/^GHA/, '');
+    }
+
+    if (value.length > 3 && value.length <= 12) {
+        value = value.slice(0, 3) + '-' + value.slice(3);
+    } else if (value.length > 12) {
+        value = value.slice(0, 3) + '-' + value.slice(3, 12) + '-' + value.slice(12, 13);
+    }
+
+    input.value = value;
+}
+</script>
+{% endblock %}

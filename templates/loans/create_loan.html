@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block title %}Apply for New Loan | Anchor Crest Consult{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+                <h5 class="mb-0"><i class="bi bi-file-earmark-text me-2"></i>Apply for New Loan</h5>
+                <a href="{% url 'loan_list' %}" class="btn btn-sm btn-outline-light">Back to Portfolio</a>
+            </div>
+            <div class="card-body p-4">
+                {% if not clients %}
+                    <div class="alert alert-warning">
+                        No clients found in the registry. Please <a href="{% url 'client_create' %}" class="alert-link">register a client first</a> before applying for a loan.
+                    </div>
+                {% else %}
+                    <form method="post" action="{% url 'create_loan' %}">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="client_id" class="form-label font-weight-bold">Select Client</label>
+                            <select name="client_id" id="client_id" class="form-select" required>
+                                <option value="" selected disabled>-- Choose Client --</option>
+                                {% for client in clients %}
+                                    <option value="{{ client.id }}">{{ client.first_name }} {{ client.last_name }} ({{ client.phone_number }})</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="amount" class="form-label">Requested Amount (GHS)</label>
+                                <input type="number" step="0.01" name="amount" id="amount" class="form-control" placeholder="e.g. 5000.00" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="interest_rate" class="form-label">Interest Rate (%)</label>
+                                <input type="number" step="0.01" name="interest_rate" id="interest_rate" class="form-control" value="5.00" required>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="term_months" class="form-label">Loan Duration (Months)</label>
+                            <input type="number" name="term_months" id="term_months" class="form-control" value="6" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="purpose" class="form-label">Loan Purpose / Business Operations Description</label>
+                            <textarea name="purpose" id="purpose" rows="3" class="form-control" placeholder="Describe the business or personal reason for this loan request..." required></textarea>
+                        </div>
+
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a href="{% url 'loan_list' %}" class="btn btn-secondary me-md-2">Cancel</a>
+                            <button type="submit" class="btn btn-primary"><i class="bi bi-send-fill me-1"></i> Submit Application</button>
+                        </div>
+                    </form>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

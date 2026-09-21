@@ -1,0 +1,68 @@
+﻿{% extends 'base.html' %}
+
+{% block title %}Anchor Crest Consult | MicroCredit System{% endblock %}
+
+{% block content %}
+<style>
+    .hero-banner {
+        background: linear-gradient(135deg, #0F1E36 0%, #0A1424 100%);
+        color: white;
+        padding: 60px 0 100px 0;
+        width: 100%;
+    }
+
+    .action-card {
+        border: none;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .action-card:hover { 
+        transform: translateY(-4px); 
+        box-shadow: 0 8px 25px rgba(0,0,0,0.12); 
+    }
+</style>
+
+<!-- Edge-to-Edge Hero Section -->
+<div class="hero-banner text-center">
+    <div class="container">
+        <h1 class="display-4 fw-bold mb-3">Microcredit Management System</h1>
+        <p class="lead text-light opacity-75">Streamlined client onboarding, staff loan processing, and admin approvals.</p>
+    </div>
+</div>
+
+<!-- Cards Centered Below -->
+<div class="container" style="margin-top: -60px;">
+    <div class="row g-4 justify-content-center">
+        <div class="col-md-4">
+            <div class="card action-card h-100 p-4 text-center bg-white">
+                <div class="card-body">
+                    <h5 class="card-title fw-bold text-dark">Admin Management</h5>
+                    <p class="card-text text-muted small">Access full system settings, manage staff accounts, and review pending loan approvals.</p>
+                    <a href="/admin/" class="btn btn-dark w-100 mt-3">Admin Dashboard</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card action-card h-100 p-4 text-center bg-white">
+                <div class="card-body">
+                    <h5 class="card-title fw-bold text-dark">Loan Processing</h5>
+                    <p class="card-text text-muted small">Submit new loan applications on behalf of registered clients and view application status.</p>
+                    <a href="{% url 'loan_list' %}" class="btn btn-gold w-100 mt-3">Loans Portal</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card action-card h-100 p-4 text-center bg-white">
+                <div class="card-body">
+                    <h5 class="card-title fw-bold text-dark">Client Registry</h5>
+                    <p class="card-text text-muted small">Onboard new borrowers, record identification details, and maintain client profiles.</p>
+                    <a href="{% url 'client_list' %}" class="btn btn-dark w-100 mt-3">Clients Portal</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

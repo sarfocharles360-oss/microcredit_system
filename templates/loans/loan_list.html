@@ -1,0 +1,73 @@
+﻿{% extends 'base.html' %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Loan Portfolio</h2>
+    <a href="{% url 'create_loan' %}" class="btn btn-primary">
+        <i class="bi bi-plus-circle me-1"></i> Apply for New Loan
+    </a>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Loan #</th>
+                        <th>Client</th>
+                        <th>Amount Issued</th>
+                        <th>Interest (20%)</th>
+                        <th>Total Payable</th>
+                        <th>Duration</th>
+                        <th>Weekly Payment</th>
+                        <th>Balance Due</th>
+                        <th>Status</th>
+                        <th>Submitted By</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for loan in loans %}
+                    <tr>
+                        <td><strong>#{{ loan.id }}</strong></td>
+                        <td>{{ loan.client.first_name }} {{ loan.client.last_name }}</td>
+                        <td>GHS {{ loan.amount|floatformat:2 }}</td>
+                        <td>GHS {{ loan.interest_amount|floatformat:2 }}</td>
+                        <td><strong class="text-primary">GHS {{ loan.total_payable|floatformat:2 }}</strong></td>
+                        <td>{{ loan.total_weeks }} Weeks</td>
+                        <td>GHS {{ loan.weekly_installment|floatformat:2 }} / wk</td>
+                        <td><span class="badge bg-warning text-dark">GHS {{ loan.remaining_balance|floatformat:2 }}</span></td>
+                        <td>
+                            {% if loan.status == 'APPROVED' %}
+                                <span class="badge bg-success">Approved</span>
+                            {% elif loan.status == 'PENDING' %}
+                                <span class="badge bg-secondary">Pending</span>
+                            {% else %}
+                                <span class="badge bg-danger">Rejected</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if loan.submitted_by %}
+                                {{ loan.submitted_by.username }}
+                            {% else %}
+                                System
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="{% url 'record_repayment' loan.id %}" class="btn btn-sm btn-outline-primary">
+                                <i class="bi bi-cash-stack"></i> Record Payment
+                            </a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="11" class="text-center py-4 text-muted">No loan applications found.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

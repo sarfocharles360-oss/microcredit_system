@@ -1,0 +1,29 @@
+<!-- REPLACE ALL EXISTING CODE IN templates/loans/loan_detail.html WITH THIS -->
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-4">
+    <div class="card shadow-sm p-4">
+        <h2>Loan Application #{{ loan.id }}</h2>
+        <p><strong>Applicant:</strong> {{ loan.client.first_name }} {{ loan.client.last_name }}</p>
+        <p><strong>Amount Requested:</strong> GHS {{ loan.principal_amount }}</p>
+        <p><strong>Status:</strong> <span class="badge bg-warning text-dark">{{ loan.get_status_display }}</span></p>
+
+        {% if user.is_superuser or user.profile.role == 'ADMIN' %}
+            {% if loan.status == 'PENDING' %}
+            <div class="mt-4 p-3 bg-light border rounded">
+                <h5>Admin Approval Action</h5>
+                <form method="post" action="{% url 'approve_loan' loan.id %}" class="d-flex gap-2 mt-2">
+                    {% csrf_token %}
+                    <button type="submit" name="action" value="approve" class="btn btn-success">
+                        ✓ Approve Loan
+                    </button>
+                    <button type="submit" name="action" value="reject" class="btn btn-danger">
+                        ✗ Reject Loan
+                    </button>
+                </form>
+            </div>
+            {% endif %}
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

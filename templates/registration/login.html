@@ -1,0 +1,157 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Staff Login - Anchor Crest Consult</title>
+    <style>
+        :root {
+            --brand-navy: #0F1E36;
+            --brand-gold: #D4AF37;
+            --brand-gold-hover: #B89628;
+            --brand-dark: #0A1424;
+            --bg-light: #F8FAFC;
+        }
+
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background-color: var(--bg-light); 
+            margin: 0; 
+            padding: 0; 
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            color: #1E293B; 
+        }
+
+        .login-card {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(15, 30, 54, 0.1);
+            border-top: 5px solid var(--brand-gold);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .brand-logo {
+            height: 60px;
+            width: auto;
+            margin-bottom: 15px;
+        }
+
+        .login-card h2 {
+            color: var(--brand-navy);
+            margin: 0 0 8px 0;
+            font-size: 24px;
+        }
+
+        .login-card p {
+            color: #64748B;
+            font-size: 14px;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            text-align: left;
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--brand-navy);
+            margin-bottom: 6px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #CBD5E1;
+            border-radius: 6px;
+            box-sizing: border-box;
+            font-size: 14px;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--brand-gold);
+            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.2);
+        }
+
+        .btn-submit {
+            width: 100%;
+            background-color: var(--brand-navy);
+            color: white;
+            padding: 12px;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 15px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn-submit:hover {
+            background-color: #1A2F50;
+        }
+
+        .error-list {
+            background-color: #FEF2F2;
+            border: 1px solid #FCA5A5;
+            color: #991B1B;
+            padding: 10px;
+            border-radius: 6px;
+            font-size: 13px;
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .back-home {
+            margin-top: 20px;
+            display: inline-block;
+            font-size: 13px;
+            color: #64748B;
+            text-decoration: none;
+        }
+
+        .back-home:hover {
+            color: var(--brand-navy);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="login-card">
+        <img src="{% static 'images/Anchor_Crest_Consult_Logo 1.png' %}" alt="Anchor Crest Logo" class="brand-logo">
+        <h2>Staff Portal Login</h2>
+        <p>Enter your credentials to access loan operations</p>
+
+        {% if form.errors %}
+            <div class="error-list">
+                Invalid username or password. Please try again.
+            </div>
+        {% endif %}
+
+        <form method="post" action="/login/">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="id_username">Username</label>
+                <input type="text" name="username" id="id_username" required autofocus>
+            </div>
+            <div class="form-group">
+                <label for="id_password">Password</label>
+                <input type="password" name="password" id="id_password" required>
+            </div>
+            <button type="submit" class="btn-submit">Sign In</button>
+        </form>
+
+        <a href="/" class="back-home">&larr; Back to Main Portal</a>
+    </div>
+
+</body>
+</html>
