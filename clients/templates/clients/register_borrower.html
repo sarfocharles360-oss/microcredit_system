@@ -1,0 +1,30 @@
+﻿{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4" style="max-width: 600px;">
+<h2 class="mb-3">Register New Borrower</h2>
+
+{% if messages %}
+    {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+    {% endfor %}
+{% endif %}
+
+<form method="POST">
+    {% csrf_token %}
+    <div class="mb-3">
+        <label class="form-label">First Name</label>
+        <input type="text" name="first_name" class="form-control" required>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Last Name</label>
+        <input type="text" name="last_name" class="form-control" required>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Phone Number (Ghanaian Network)</label>
+        <input type="text" name="phone_number" class="form-control" placeholder="024XXXXXXX or 020XXXXXXX" required>
+    </div>
+    <button type="submit" class="btn btn-primary w-100">Send Verification Code</button>
+</form>
+</div>
+{% endblock %}

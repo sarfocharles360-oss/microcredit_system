@@ -5,8 +5,18 @@ import dj_database_url
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-local-dev-key-change-in-prod')
-DEBUG = os.environ.get('DEBUG', 'True') == 'True'
+
+DEBUG = os.environ.get('DEBUG', 'True').lower() == 'true'
+
 ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '*').split(',')
+
+CSRF_TRUSTED_ORIGINS = [
+    'https://*.onrender.com',
+    'https://*.pythonanywhere.com',
+    'https://mobile-mocha-sediment.ngrok-free.dev',
+    'https://*.ngrok-free.app',
+    'https://*.ngrok-free.dev',
+]
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -30,7 +40,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'microcredit_system.urls'
+ROOT_URLCONF = 'microcredit_core.urls'
 
 TEMPLATES = [
     {
@@ -48,7 +58,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'microcredit_system.wsgi.application'
+WSGI_APPLICATION = 'microcredit_core.wsgi.application'
 
 DATABASES = {
     'default': dj_database_url.config(
@@ -69,12 +79,19 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
 
-STATIC_URL = 'static/'
-STATIC_ROOT = BASE_DIR / 'staticfiles'
-STATICFILES_DIRS = [BASE_DIR / 'static'] if (BASE_DIR / 'static').exists() else []
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/loans/'
 LOGOUT_REDIRECT_URL = '/login/'
+
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+DATABASES = {
+    'default': dj_database_url.config(
+        default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
+        conn_max_age=600
+    )
+}
