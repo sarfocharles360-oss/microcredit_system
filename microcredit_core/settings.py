@@ -89,7 +89,20 @@ LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/loans/'
 LOGOUT_REDIRECT_URL = '/login/'
 
+<<<<<<< HEAD
 import os
+=======
+STATIC_URL = '/static/'
+
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+STATICFILES_DIRS = [
+    BASE_DIR / 'static',
+    BASE_DIR / 'microcredit_core' / 'static',
+]
+
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+>>>>>>> 744e0c9af1b0ab86196a84f4732ba508c15031df
 
 STATIC_URL = '/static/'
 

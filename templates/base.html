@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8">{% load static %}
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Anchor Crest Consult | MicroCredit{% endblock %}</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -95,7 +95,7 @@
 <nav class="navbar navbar-expand-lg navbar-custom">
   <div class="container">
     <a class="navbar-brand d-flex align-items-center" href="{% url 'home' %}">
-      <img src="{% static 'images/Anchor_Crest_Consult_Logo 1.png' %}" alt="Anchor Crest Logo" class="brand-logo">
+<img src="{% static 'images/logo.png' %}" alt="Anchor Crest Logo" class="me-2" style="height: 40px;">
       <div>
         <span class="brand-text">ANCHOR CREST</span>
         <span class="brand-subtext">CONSULT - Anchored in Trust, Driven by Growth</span>
