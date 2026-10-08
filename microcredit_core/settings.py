@@ -109,3 +109,12 @@ STATICFILES_DIRS = [
 ]
 
 STATIC_ROOT = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'staticfiles')
+
+# Email Configuration
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'sarfocharles360@gmail.com'
+EMAIL_HOST_PASSWORD = 'your-16-digit-app-password'
+DEFAULT_FROM_EMAIL = 'Microcredit Admin <sarfocharles360@gmail.com>'
