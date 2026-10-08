@@ -127,3 +127,5 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'sarfocharles360@gmail.com'
 EMAIL_HOST_PASSWORD = 'kutr jcre zuax jnsk'
 DEFAULT_FROM_EMAIL = 'Microcredit Admin <sarfocharles360@gmail.com>'
+
+ARKESEL_API_KEY = 'RFJRR0Vyb1BEQVdLcm9pYWxidXM'
