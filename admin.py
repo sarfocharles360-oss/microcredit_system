@@ -20,3 +20,28 @@ class LoanApplicationAdmin(admin.ModelAdmin):
 class RepaymentAdmin(admin.ModelAdmin):
     list_display = ('id', 'loan', 'amount_paid', 'payment_date')
     list_filter = ('payment_date',)
+
+# Remove password from default User Creation Form
+from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
+from django.contrib.auth.models import User
+from django import forms
+
+class CustomUserCreationForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ('username', 'first_name', 'last_name', 'email')
+
+class CustomUserAdmin(BaseUserAdmin):
+    add_form = CustomUserCreationForm
+    add_fieldsets = (
+        (None, {
+            'classes': ('wide',),
+            'fields': ('username', 'first_name', 'last_name', 'email'),
+        }),
+    )
+
+try:
+    admin.site.unregister(User)
+    admin.site.register(User, CustomUserAdmin)
+except Exception:
+    pass
