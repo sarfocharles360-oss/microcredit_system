@@ -1,0 +1,10 @@
+{% extends "admin/login.html" %}
+
+{% block content %}
+{{ block.super }}
+<div style="text-align: center; margin-top: 15px;">
+    <a href="{% url 'password_reset' %}" style="color: #417690; text-decoration: none; font-weight: bold;">
+        Forgotten password?
+    </a>
+</div>
+{% endblock %}
