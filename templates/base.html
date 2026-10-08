@@ -1,4 +1,4 @@
-﻿{% load static %}
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -115,7 +115,7 @@
         </li>
 
         <li class="nav-item ms-2">
-          <a href="{% url 'login' %}" class="btn btn-outline-light btn-sm"><i class="bi bi-person-badge me-1"></i> Staff Login</a>
+          <a href="{% url 'login' %}" class="btn btn-outline-light btn-sm"><i class="bi bi-person-badge me-1"></i> Staff Login</a>`n            {% if user.is_superuser %}`n            <a href="{% url 'admin:auth_user_add' %}" class="btn btn-outline-light btn-sm ms-2">`n                <i class="bi bi-person-plus-fill me-1"></i> Register Staff`n            </a>`n            {% endif %}
         </li>
 
         {% if user.is_authenticated %}
