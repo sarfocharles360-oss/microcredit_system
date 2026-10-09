@@ -1,66 +1,83 @@
+import secrets
+import urllib.request
+import urllib.parse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from .models import Client
-from .forms import ClientForm
-from .sms_utils import generate_otp, send_otp_sms
 
-def client_list(request):
-    clients = Client.objects.all()
-    return render(request, 'clients/client_list.html', {'clients': clients})
+ARKESEL_API_KEY = "YOUR_ARKESEL_API_KEY"
 
-import traceback
+def register_borrower(request):
+    if request.method == "POST":
+        client_data = {
+            "first_name": request.POST.get("first_name", "").strip(),
+            "last_name": request.POST.get("last_name", "").strip(),
+            "phone_number": request.POST.get("phone_number", "").strip(),
+            "email": request.POST.get("email", "").strip(),
+            "id_number": request.POST.get("id_number", "").strip(),
+            "address": request.POST.get("address", "").strip(),
+        }
 
-def client_create(request):
-    """Step 1: Admin fills form -> saves temporarily, sends OTP via SMS with error trapping."""
-    if request.method == 'POST':
-        try:
-            form = ClientForm(request.POST, request.FILES)
-            if form.is_valid():
-                client = form.save()
-                phone = form.cleaned_data.get('phone_number')
-                otp = generate_otp()
-                
-                request.session['pending_client_id'] = client.id
-                request.session['borrower_otp'] = otp
-                
-                if send_otp_sms(phone, otp):
-                    messages.success(request, f"Verification code sent to {phone}.")
-                    return redirect('verify_borrower_otp')
-                else:
-                    messages.error(request, "Failed to send SMS code. Please verify the phone number.")
-                    client.delete()
-            else:
-                # If form is invalid, re-render with errors
-                return render(request, 'clients/client_form.html', {'form': form, 'title': 'Register New Borrower'})
-        except Exception as e:
-            error_msg = traceback.format_exc()
-            print(error_msg)  # Prints to your terminal
-            from django.http import HttpResponse
-            return HttpResponse(f"<h3>An error occurred:</h3><pre>{error_msg}</pre>", status=500)
-    else:
-        form = ClientForm()
-    
-    return render(request, 'clients/client_form.html', {'form': form, 'title': 'Register New Borrower'})
+        otp_code = str(secrets.randbelow(900000) + 100000)
+        request.session["pending_client_data"] = client_data
+        request.session["registration_otp"] = otp_code
+
+        phone = client_data["phone_number"]
+        sms_message = f"Your Anchor Crest verification code is {otp_code}."
+
+        if phone and ARKESEL_API_KEY != "YOUR_ARKESEL_API_KEY":
+            try:
+                params = urllib.parse.urlencode({
+                    "action": "send-sms",
+                    "api_key": ARKESEL_API_KEY,
+                    "to": phone,
+                    "from": "AnchorCrest",
+                    "sms": sms_message
+                })
+                url = f"https://sms.arkesel.com/sms/api?{params}"
+                urllib.request.urlopen(url, timeout=5)
+            except Exception as e:
+                print(f"SMS send log: {e}")
+
+        messages.info(request, f"A verification code has been sent to {phone}.")
+        return redirect("verify_borrower_otp")
+
+    return render(request, "clients/register_borrower.html")
+
 
 def verify_borrower_otp(request):
-    """Step 2: Admin enters code received on borrower's phone to finalize."""
-    if request.method == 'POST':
-        user_code = request.POST.get('otp_code')
-        session_code = request.session.get('borrower_otp')
-        client_id = request.session.get('pending_client_id')
+    if request.method == "POST":
+        entered_otp = request.POST.get("otp_code", "").strip()
+        saved_otp = request.session.get("registration_otp")
+        client_data = request.session.get("pending_client_data")
 
-        if session_code and user_code == session_code and client_id:
-            # Code is correct -> Clean up session data
-            del request.session['borrower_otp']
-            del request.session['pending_client_id']
-            
-            messages.success(request, "Borrower phone number verified and registration completed!")
-            return redirect('client_list')
+        if entered_otp and entered_otp == saved_otp and client_data:
+            client = Client.objects.create(
+                first_name=client_data["first_name"],
+                last_name=client_data["last_name"],
+                phone_number=client_data["phone_number"],
+                email=client_data["email"],
+                id_number=client_data["id_number"],
+                address=client_data["address"],
+            )
+
+            request.session.pop("pending_client_data", None)
+            request.session.pop("registration_otp", None)
+
+            messages.success(request, f"Client {client.first_name} {client.last_name} verified successfully!")
+            return redirect("client_list")
         else:
-            messages.error(request, "Invalid verification code. Please try again.")
+            messages.error(request, "Invalid or expired verification code.")
 
-    return render(request, 'clients/verify_otp.html')
+    return render(request, "clients/verify_otp.html")
+
+
+def client_list(request):
+    clients = Client.objects.all().order_by("-id")
+    return render(request, "clients/client_list.html", {"clients": clients})
+
 
 def client_detail(request, pk):
     client = get_object_or_404(Client, pk=pk)
-    return render(request, 'clients/client_detail.html', {'client': client})
+    return render(request, "clients/client_detail.html", {"client": client})
+

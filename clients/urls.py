@@ -1,10 +1,10 @@
 ﻿from django.urls import path
-from .views import client_list, client_create, client_detail, verify_borrower_otp
+from . import views
 
 urlpatterns = [
-    path('', client_list, name='client_list'),
-    path('add/', client_create, name='client_create'),
-    path('register/', client_create, name='register_borrower'), # Fallback route alias
-    path('verify-otp/', verify_borrower_otp, name='verify_borrower_otp'),
-    path('<int:pk>/', client_detail, name='client_detail'),
+    path("", views.client_list, name="client_list"),
+    path("add/", views.register_borrower, name="client_create"),
+    path("register/", views.register_borrower, name="register_borrower"),
+    path("verify-otp/", views.verify_borrower_otp, name="verify_borrower_otp"),
+    path("<int:pk>/", views.client_detail, name="client_detail"),
 ]

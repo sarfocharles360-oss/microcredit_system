@@ -102,3 +102,6 @@ DATABASES = {
         conn_max_age=600
     )
 }
+# Arkesel SMS Credentials
+ARKESEL_API_KEY = 'RFJRROvyblBEQVdLcm@pYWxidXM'
+ARKESEL_SENDER_ID = 'Arkesel'
