@@ -5,7 +5,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from .models import Client
 
-ARKESEL_API_KEY = "YOUR_ARKESEL_API_KEY"
+ARKESEL_API_KEY = "a2t3SXBzUlFVcmpuRVJreXBTdGU"
 
 def register_borrower(request):
     if request.method == "POST":
