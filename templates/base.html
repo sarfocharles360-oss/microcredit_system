@@ -41,7 +41,7 @@
             </button>
             <div class="collapse navbar-collapse mt-2 mt-lg-0" id="navbarContent">
                 <div class="navbar-nav ms-auto align-items-lg-center gap-2">
-                    <a class="nav-link text-white" href="/clients/"><i class="bi bi-people-fill me-1"></i> Clients</a>
+                    <a class="nav-link text-white" href="{% url 'client_list' %}"><i class="bi bi-people-fill me-1"></i> Clients</a>
                     <a class="nav-link text-white" href="/loans/"><i class="bi bi-cash-stack me-1"></i> Loans</a>
                     <a class="btn btn-warning btn-sm text-dark fw-semibold" href="/clients/add/"><i class="bi bi-person-plus-fill me-1"></i> New Client</a>
                     {% if user.is_authenticated %}
