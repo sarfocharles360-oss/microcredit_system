@@ -41,16 +41,16 @@
             </button>
             <div class="collapse navbar-collapse mt-2 mt-lg-0" id="navbarContent">
                 <div class="navbar-nav ms-auto align-items-lg-center gap-2">
-                    <a class="nav-link text-white" href="{% url 'clients_list' %}"><i class="bi bi-people-fill me-1"></i> Clients</a>
-                    <a class="nav-link text-white" href="{% url 'loans_list' %}"><i class="bi bi-cash-stack me-1"></i> Loans</a>
-                    <a class="btn btn-warning btn-sm text-dark fw-semibold" href="{% url 'create_client' %}"><i class="bi bi-person-plus-fill me-1"></i> New Client</a>
+                    <a class="nav-link text-white" href="/clients/"><i class="bi bi-people-fill me-1"></i> Clients</a>
+                    <a class="nav-link text-white" href="/loans/"><i class="bi bi-cash-stack me-1"></i> Loans</a>
+                    <a class="btn btn-warning btn-sm text-dark fw-semibold" href="/clients/create/"><i class="bi bi-person-plus-fill me-1"></i> New Client</a>
                     {% if user.is_authenticated %}
                         {% if user.is_superuser %}
-                            <a class="btn btn-outline-light btn-sm" href="{% url 'admin:auth_user_add' %}"><i class="bi bi-person-badge me-1"></i> Register Staff</a>
+                            <a class="btn btn-outline-light btn-sm" href="/admin/auth/user/add/"><i class="bi bi-person-badge me-1"></i> Register Staff</a>
                         {% endif %}
-                        <a class="btn btn-outline-light btn-sm" href="{% url 'logout' %}"><i class="bi bi-box-arrow-right me-1"></i> Logout</a>
+                        <a class="btn btn-outline-light btn-sm" href="/logout/"><i class="bi bi-box-arrow-right me-1"></i> Logout</a>
                     {% else %}
-                        <a class="btn btn-outline-light btn-sm" href="{% url 'login' %}"><i class="bi bi-phone me-1"></i> Staff Login</a>
+                        <a class="btn btn-outline-light btn-sm" href="/login/"><i class="bi bi-phone me-1"></i> Staff Login</a>
                     {% endif %}
                 </div>
             </div>
