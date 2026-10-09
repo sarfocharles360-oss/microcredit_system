@@ -1,12 +1,11 @@
 import secrets
 import urllib.request
-import urllib.parse
 import json
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from .models import Client
 
-ARKESEL_API_KEY = "YOUR_COPIED_ARKESEL_KEY"
+ARKESEL_API_KEY = "a2t3SXBzUlFVcmpuRVJreXBTdGU"
 
 def format_ghana_phone(phone):
     phone = phone.strip().replace(" ", "").replace("-", "").replace("+", "")
@@ -35,15 +34,23 @@ def register_borrower(request):
 
         if raw_phone and ARKESEL_API_KEY != "YOUR_ARKESEL_API_KEY":
             try:
-                params = urllib.parse.urlencode({
-                    "action": "send-sms",
-                    "api_key": ARKESEL_API_KEY,
-                    "to": formatted_phone,
+                payload = json.dumps({
                     "sender": "Arkesel",
-                    "sms": sms_message
-                })
-                url = f"https://sms.arkesel.com/sms/api?{params}"
-                req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
+                    "recipients": [formatted_phone],
+                    "message": sms_message
+                }).encode("utf-8")
+
+                req = urllib.request.Request(
+                    "https://sms.arkesel.com/api/v2/sms/send",
+                    data=payload,
+                    headers={
+                        "api-key": ARKESEL_API_KEY,
+                        "Content-Type": "application/json",
+                        "User-Agent": "Mozilla/5.0"
+                    },
+                    method="POST"
+                )
+
                 with urllib.request.urlopen(req, timeout=10) as response:
                     res_body = response.read().decode("utf-8")
                     print(f"ARKESEL SMS RESPONSE: {res_body}")
