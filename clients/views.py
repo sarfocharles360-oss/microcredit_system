@@ -4,7 +4,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from .models import Client
 
-ARKESEL_API_KEY = "a2t3SXBzU1FvcmpuRVJreXBTdGU="
+ARKESEL_API_KEY = "Q1lJQk5KSWdwRUZvVE15TEI="  # Paste your actual key inside quotes here
 
 def format_ghana_phone(phone):
     phone = phone.strip().replace(" ", "").replace("-", "").replace("+", "")
