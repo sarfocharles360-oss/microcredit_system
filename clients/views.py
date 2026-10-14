@@ -4,7 +4,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from .models import Client
 
-ARKESEL_API_KEY = "Q1lJQk5KSWdwRUZvVE15TEI="  # Paste your actual key inside quotes here
+ARKESEL_API_KEY = "Uk1Va0ZGZmhCUFd2dVVCS0RPcFU"
 
 def format_ghana_phone(phone):
     phone = phone.strip().replace(" ", "").replace("-", "").replace("+", "")
@@ -79,7 +79,6 @@ def verify_borrower_otp(request):
             with urllib.request.urlopen(req, timeout=10) as response:
                 res_body = json.loads(response.read().decode("utf-8"))
                 
-                # Check if verification succeeded according to Arkesel's response
                 if res_body.get("status") == "success" and client_data:
                     client = Client.objects.create(
                         first_name=client_data["first_name"],
