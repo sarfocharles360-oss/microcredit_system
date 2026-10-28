@@ -1,6 +1,6 @@
 import json
 import urllib.request
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from .models import Client
 
@@ -17,6 +17,10 @@ def format_ghana_phone(phone):
 def client_list(request):
     clients = Client.objects.all()
     return render(request, "clients/client_list.html", {"clients": clients})
+
+def client_detail(request, pk):
+    client = get_object_or_404(Client, pk=pk)
+    return render(request, "clients/client_detail.html", {"client": client})
 
 def register_borrower(request):
     if request.method == "POST":
@@ -75,7 +79,6 @@ def verify_borrower_otp(request):
 
     if request.method == "POST":
         entered_otp = request.POST.get("otp_code", "").strip()
-        # For production flow, you can add Arkesel OTP verification here or complete client creation:
         Client.objects.create(
             first_name=pending_data.get("first_name"),
             last_name=pending_data.get("last_name"),
