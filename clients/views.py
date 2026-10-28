@@ -5,6 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
 from django.conf import settings
 from .models import Client
+
 def format_ghana_phone(phone):
     if not phone:
         return ""
@@ -37,11 +38,10 @@ def register_borrower(request):
             }
             request.session["pending_client_data"] = client_data
 
-            # Generate secure 6-digit OTP
+            # Generate 6-digit OTP
             generated_otp = str(random.randint(100000, 999999))
             request.session["pending_otp"] = generated_otp
 
-            # Email the OTP to the admin
             subject = "AnchorCrest Admin Alert: Borrower Verification Code"
             message = (
                 f"A new borrower registration is pending verification.\n\n"
@@ -50,30 +50,26 @@ def register_borrower(request):
                 f"Verification OTP Code: {generated_otp}\n\n"
                 f"Please enter this code on the verification page to complete registration."
             )
-            
-            try:
-                send_mail(
-                    subject,
-                    message,
-                    settings.DEFAULT_FROM_EMAIL,
-                    ['sarfocharles360@gmail.com'],
-                    fail_silently=False,
-                )
-                messages.info(request, f"A verification code has been sent to the administrator email.")
-            except Exception as mail_err:
-                print(f"EMAIL SEND ERROR: {str(mail_err)}")
-                messages.error(request, "Failed to send verification email. Please check server logs.")
-                return redirect("register_borrower")
 
+            # Send Email directly to admin inbox
+            send_mail(
+                subject,
+                message,
+                settings.DEFAULT_FROM_EMAIL,
+                ['sarfocharles360@gmail.com'],
+                fail_silently=False,
+            )
+
+            messages.success(request, "Verification code sent to your admin email!")
             return redirect("verify_borrower_otp")
 
         except Exception as e:
-            print(f"CRITICAL VIEW ERROR: {str(e)}")
-            messages.error(request, "An error occurred during registration. Please try again.")
+            messages.error(request, f"Registration Error: {str(e)}")
             return redirect("register_borrower")
 
     return render(request, "clients/register_borrower.html")
 
+@login_required(login_url='/admin/login/')
 def verify_borrower_otp(request):
     pending_data = request.session.get("pending_client_data")
     expected_otp = request.session.get("pending_otp")

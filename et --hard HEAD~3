@@ -1,0 +1,41 @@
+[33md66e85e[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m)[m Revert temporary changes to fix 500 error
+[33m04aac37[m Add detailed error logging for Arkesel OTP
+[33m3745778[m Update with new active Arkesel API key
+[33md0843b1[m Fix API key formatting with trailing equals sign
+[33m0095a07[m Add active Arkesel Main API Key for OTP
+[33m58a7cf8[m Update Arkesel Main API key for OTP endpoint
+[33mde79921[m Integrate Arkesel automated OTP generate and verify endpoints
+[33m97002a2[m Switch to Arkesel v2 JSON API endpoint
+[33m0ff19eb[m Auto-format phone to 233 format and use default Arkesel sender ID
+[33m9c91de0[m Update active Arkesel Main API key
+[33m559a6c0[m Add Email, Ghana Card, and Address inputs to registration form
+[33m4699bc0[m Resolved merge conflicts using local working code
+[33m695c3a3[m Fix routing and view functions for OTP registration
+[33m421a6e3[m Replace requests with standard urllib to eliminate 500 import crashes
+[33m9b59b11[m Hold registration in session until Arkesel OTP is verified
+[33m458f371[m Update clients/views.py to explicitly handle POST saving and list retrieval
+[33mefd3a0c[m Safe dynamic URL routing for client creation
+[33me880b2f[m Fix view function name to create_client in clients/urls.py
+[33medb3c71[m Update clients/urls.py with explicit create route
+[33m7be4e3e[m Add create alias to clients/urls.py
+[33m0d5afc5[m Update navbar links to use Django URL pattern names
+[33meb5550b[m Fix New Client button URL path to /clients/add/
+[33m3d50b8a[m Fix NoReverseMatch error by using direct URL paths in navbar
+[33m206302a[m Completely rewrite base.html with clean mobile toggler navigation
+[33mdb8e50f[m Add responsive mobile navbar toggler button to base.html
+[33mee96d0b[m Add Arkesel API key to settings.py
+[33m82319d8[m Add OTP verification template, view, and Arkesel SMS helper
+[33m13664eb[m Force override UserAdmin to remove password field from add user page
+[33m5cabf03[m Exclusively remove password field from user add form in root admin.py
+[33m1f0f99f[m Remove password field from admin user creation page
+[33m658549a[m Add Register Staff button next to Staff Login in base.html
+[33m0567ff6[m Add Gmail SMTP credentials
+[33meb090e2[m Configure SMTP settings for password reset emails
+[33m7b313e1[m Strip merge conflict markers from settings.py
+[33mdb663ba[m Add forgot password link to admin login
+[33mc86e15d[m Auto-save and deploy update
+[33mfd968d6[m Add logo image to repository
+[33m744e0c9[m Update static configuration for PythonAnywhere hosting
+[33m73de50b[m Prepare microfinance app for deployment
+[33mf79a86b[m Trigger fresh deployment for microcredit_core settings
+[33mf6d0e89[m Initial commit for production deployment

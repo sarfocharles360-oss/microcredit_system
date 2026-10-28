@@ -105,3 +105,13 @@ DATABASES = {
 # Arkesel SMS Credentials
 ARKESEL_API_KEY = 'RFJRROvyblBEQVdLcm@pYWxidXM'
 ARKESEL_SENDER_ID = 'Arkesel'
+
+# Email Configuration (Gmail SMTP Backend)
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'sarfocharles360@gmail.com'
+# Replace 'YOUR_GMAIL_APP_PASSWORD' with a 16-character Google App Password
+EMAIL_HOST_PASSWORD = 'vhbmvfzhihzliwkt' 
+DEFAULT_FROM_EMAIL = 'AnchorCrest Microcredit <sarfocharles360@gmail.com>'
