@@ -1,10 +1,7 @@
-import json
-import urllib.request
+import random
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from .models import Client
-
-ARKESEL_API_KEY = "avdSeEnYTghQykI3TndJb3JNCGI"
 
 def format_ghana_phone(phone):
     if not phone:
@@ -35,33 +32,14 @@ def register_borrower(request):
             }
             request.session["pending_client_data"] = client_data
 
-            formatted_phone = format_ghana_phone(client_data["phone_number"])
+            # Generate local 6-digit OTP for admin/testing view
+            generated_otp = str(random.randint(100000, 999999))
+            request.session["pending_otp"] = generated_otp
 
-            payload = {
-                "expiry": 5,
-                "length": 6,
-                "medium": "sms",
-                "number": formatted_phone,
-                "sender_id": "AnchorCrest"
-            }
+            # Print to PythonAnywhere server log and display on screen for admin
+            print(f"*** ADMIN DEV OTP CODE FOR {client_data['phone_number']}: {generated_otp} ***")
+            messages.success(request, f"[Admin Mode] Verification code generated: {generated_otp}")
 
-            req = urllib.request.Request(
-                "https://sms.arkesel.com/api/otp/generate",
-                data=json.dumps(payload).encode("utf-8"),
-                headers={
-                    "api-key": ARKESEL_API_KEY,
-                    "Content-Type": "application/json"
-                },
-                method="POST"
-            )
-            try:
-                with urllib.request.urlopen(req, timeout=5) as response:
-                    res_body = json.loads(response.read().decode("utf-8"))
-                    print(f"OTP SUCCESS: {res_body}")
-            except Exception as net_err:
-                print(f"Network restriction/blocked by PythonAnywhere: {net_err}")
-
-            messages.info(request, f"A verification code has been sent to {client_data['phone_number']}.")
             return redirect("verify_borrower_otp")
 
         except Exception as e:
@@ -73,24 +51,33 @@ def register_borrower(request):
 
 def verify_borrower_otp(request):
     pending_data = request.session.get("pending_client_data")
+    expected_otp = request.session.get("pending_otp")
+
     if not pending_data:
         messages.error(request, "No pending registration found. Please register again.")
         return redirect("register_borrower")
 
     if request.method == "POST":
         entered_otp = request.POST.get("otp_code", "").strip()
-        Client.objects.create(
-            first_name=pending_data.get("first_name"),
-            last_name=pending_data.get("last_name"),
-            phone_number=pending_data.get("phone_number"),
-            email=pending_data.get("email"),
-            id_number=pending_data.get("id_number"),
-            address=pending_data.get("address"),
-        )
-        if "pending_client_data" in request.session:
-            del request.session["pending_client_data"]
 
-        messages.success(request, "Borrower registered and verified successfully!")
-        return redirect("client_list")
+        if entered_otp == expected_otp:
+            Client.objects.create(
+                first_name=pending_data.get("first_name"),
+                last_name=pending_data.get("last_name"),
+                phone_number=pending_data.get("phone_number"),
+                email=pending_data.get("email"),
+                id_number=pending_data.get("id_number"),
+                address=pending_data.get("address"),
+            )
+            # Clean up session
+            if "pending_client_data" in request.session:
+                del request.session["pending_client_data"]
+            if "pending_otp" in request.session:
+                del request.session["pending_otp"]
+
+            messages.success(request, "Borrower registered and verified successfully!")
+            return redirect("client_list")
+        else:
+            messages.error(request, "Invalid verification code. Please check and try again.")
 
     return render(request, "clients/verify_otp.html", {"phone_number": pending_data.get("phone_number")})
