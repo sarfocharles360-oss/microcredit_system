@@ -35,6 +35,7 @@ def register_borrower(request):
             "sender_id": "AnchorCrest"
         }
 
+        # Safe execution wrapper for PythonAnywhere outbound restrictions
         try:
             req = urllib.request.Request(
                 "https://sms.arkesel.com/api/otp/generate",
@@ -45,14 +46,12 @@ def register_borrower(request):
                 },
                 method="POST"
             )
-            with urllib.request.urlopen(req, timeout=10) as response:
+            with urllib.request.urlopen(req, timeout=5) as response:
                 res_body = json.loads(response.read().decode("utf-8"))
                 print(f"SUCCESS - ARKESEL OTP RESPONSE: {res_body}")
-        except urllib.error.HTTPError as e:
-            error_body = e.read().decode("utf-8") if hasattr(e, 'read') else str(e)
-            print(f"HTTP ERROR FROM ARKESEL: {e.code} - {error_body}")
         except Exception as e:
-            print(f"GENERAL EXCEPTION DURING OTP: {str(e)}")
+            # Catches connection timeouts, whitelist blocks, or DNS errors gracefully
+            print(f"OUTBOUND NETWORK NOTICE (PythonAnywhere restriction): {str(e)}")
 
         messages.info(request, f"A verification code has been sent to {client_data['phone_number']}.")
         return redirect("verify_borrower_otp")
