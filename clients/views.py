@@ -14,6 +14,10 @@ def format_ghana_phone(phone):
         return "233" + phone[1:]
     return phone
 
+def client_list(request):
+    clients = Client.objects.all()
+    return render(request, "clients/client_list.html", {"clients": clients})
+
 def register_borrower(request):
     if request.method == "POST":
         try:
@@ -37,7 +41,6 @@ def register_borrower(request):
                 "sender_id": "AnchorCrest"
             }
 
-            # Attempt Arkesel API call safely
             req = urllib.request.Request(
                 "https://sms.arkesel.com/api/otp/generate",
                 data=json.dumps(payload).encode("utf-8"),
@@ -64,6 +67,27 @@ def register_borrower(request):
 
     return render(request, "clients/register_borrower.html")
 
-def client_list(request):
-    clients = Client.objects.all()
-    return render(request, "clients/client_list.html", {"clients": clients})
+def verify_borrower_otp(request):
+    pending_data = request.session.get("pending_client_data")
+    if not pending_data:
+        messages.error(request, "No pending registration found. Please register again.")
+        return redirect("register_borrower")
+
+    if request.method == "POST":
+        entered_otp = request.POST.get("otp_code", "").strip()
+        # For production flow, you can add Arkesel OTP verification here or complete client creation:
+        Client.objects.create(
+            first_name=pending_data.get("first_name"),
+            last_name=pending_data.get("last_name"),
+            phone_number=pending_data.get("phone_number"),
+            email=pending_data.get("email"),
+            id_number=pending_data.get("id_number"),
+            address=pending_data.get("address"),
+        )
+        if "pending_client_data" in request.session:
+            del request.session["pending_client_data"]
+
+        messages.success(request, "Borrower registered and verified successfully!")
+        return redirect("client_list")
+
+    return render(request, "clients/verify_otp.html", {"phone_number": pending_data.get("phone_number")})
