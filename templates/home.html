@@ -13,6 +13,23 @@
         .action-card:hover { transform: translateY(-5px); }
         .gallery-img { height: 220px; object-fit: cover; border-radius: 10px; transition: transform 0.3s ease; }
         .gallery-img:hover { transform: scale(1.03); }
+        .author-badge {
+            background: #ffffff;
+            border: 1px solid #dee2e6;
+            border-radius: 50px;
+            padding: 5px 15px 5px 5px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .author-img {
+            width: 40px;
+            height: 40px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 2px solid #0d1b2a;
+        }
     </style>
 </head>
 <body>
@@ -114,7 +131,7 @@
         </div>
     </section>
 
-    <!-- NEW: Comprehensive Services & Solutions Writing Section -->
+    <!-- Comprehensive Services Section -->
     <section class="py-5 bg-light border-top">
         <div class="container">
             <div class="text-center mb-5">
@@ -186,10 +203,23 @@
         </div>
     </section>
 
-    <!-- Footer -->
-    <footer class="bg-dark text-white text-center py-4">
+    <!-- Footer with Author Signature at the Right Bottom -->
+    <footer class="bg-dark text-white py-4">
         <div class="container">
-            <p class="mb-0">&copy; 2026 Anchor Crest Consult. All Rights Reserved.</p>
+            <div class="row align-items-center">
+                <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
+                    <p class="mb-0">&copy; 2026 Anchor Crest Consult. All Rights Reserved.</p>
+                </div>
+                <div class="col-md-6 text-center text-md-end">
+                    <div class="author-badge">
+                        <img src="{% static 'images/author.jpeg' %}" alt="Charles Nti Ababio Sarfo" class="author-img">
+                        <div class="text-start">
+                            <small class="d-block text-muted" style="font-size: 10px; line-height: 1;">Designed & Developed By</small>
+                            <span class="fw-bold text-dark" style="font-size: 13px;">Charles Nti Ababio Sarfo</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </footer>
 
