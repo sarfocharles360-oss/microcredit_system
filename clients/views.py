@@ -1,6 +1,8 @@
 import random
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
+from django.core.mail import send_mail
+from django.conf import settings
 from .models import Client
 
 def format_ghana_phone(phone):
@@ -32,13 +34,33 @@ def register_borrower(request):
             }
             request.session["pending_client_data"] = client_data
 
-            # Generate local 6-digit OTP for admin/testing view
+            # Generate secure 6-digit OTP
             generated_otp = str(random.randint(100000, 999999))
             request.session["pending_otp"] = generated_otp
 
-            # Print to PythonAnywhere server log and display on screen for admin
-            print(f"*** ADMIN DEV OTP CODE FOR {client_data['phone_number']}: {generated_otp} ***")
-            messages.success(request, f"[Admin Mode] Verification code generated: {generated_otp}")
+            # Email the OTP to the admin
+            subject = "AnchorCrest Admin Alert: Borrower Verification Code"
+            message = (
+                f"A new borrower registration is pending verification.\n\n"
+                f"Client Name: {client_data['first_name']} {client_data['last_name']}\n"
+                f"Phone Number: {client_data['phone_number']}\n\n"
+                f"Verification OTP Code: {generated_otp}\n\n"
+                f"Please enter this code on the verification page to complete registration."
+            )
+            
+            try:
+                send_mail(
+                    subject,
+                    message,
+                    settings.DEFAULT_FROM_EMAIL,
+                    ['sarfocharles360@gmail.com'],
+                    fail_silently=False,
+                )
+                messages.info(request, f"A verification code has been sent to the administrator email.")
+            except Exception as mail_err:
+                print(f"EMAIL SEND ERROR: {str(mail_err)}")
+                messages.error(request, "Failed to send verification email. Please check server logs.")
+                return redirect("register_borrower")
 
             return redirect("verify_borrower_otp")
 
@@ -69,7 +91,6 @@ def verify_borrower_otp(request):
                 id_number=pending_data.get("id_number"),
                 address=pending_data.get("address"),
             )
-            # Clean up session
             if "pending_client_data" in request.session:
                 del request.session["pending_client_data"]
             if "pending_otp" in request.session:
@@ -78,6 +99,6 @@ def verify_borrower_otp(request):
             messages.success(request, "Borrower registered and verified successfully!")
             return redirect("client_list")
         else:
-            messages.error(request, "Invalid verification code. Please check and try again.")
+            messages.error(request, "Invalid verification code. Please check your email and try again.")
 
     return render(request, "clients/verify_otp.html", {"phone_number": pending_data.get("phone_number")})
