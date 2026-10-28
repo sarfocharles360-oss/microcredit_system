@@ -63,3 +63,7 @@ def register_borrower(request):
             return redirect("register_borrower")
 
     return render(request, "clients/register_borrower.html")
+
+def client_list(request):
+    clients = Client.objects.all()
+    return render(request, "clients/client_list.html", {"clients": clients})
