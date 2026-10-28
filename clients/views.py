@@ -31,7 +31,7 @@ def register_borrower(request):
             "length": 6,
             "medium": "sms",
             "number": formatted_phone,
-            "sender_id": "Arkesel"
+            "sender_id": "AnchorCrest"
         }
 
         try:
@@ -46,62 +46,14 @@ def register_borrower(request):
             )
             with urllib.request.urlopen(req, timeout=10) as response:
                 res_body = json.loads(response.read().decode("utf-8"))
-                print(f"ARNKESEL OTP API RESPONSE: {res_body}")
+                print(f"SUCCESS - ARKESEL OTP RESPONSE: {res_body}")
+        except urllib.error.HTTPError as e:
+            error_body = e.read().decode("utf-8")
+            print(f"HTTP ERROR FROM ARKESEL: {e.code} - {error_body}")
         except Exception as e:
-            print(f"ARKESEL OTP API ERROR: {e}")
+            print(f"GENERAL EXCEPTION DURING OTP: {str(e)}")
 
         messages.info(request, f"A verification code has been sent to {client_data['phone_number']}.")
         return redirect("verify_borrower_otp")
 
     return render(request, "clients/register_borrower.html")
-
-def verify_borrower_otp(request):
-    if request.method == "POST":
-        entered_otp = request.POST.get("otp_code", "").strip()
-        client_data = request.session.get("pending_client_data")
-        formatted_phone = format_ghana_phone(client_data["phone_number"]) if client_data else ""
-
-        payload = {
-            "confirm": entered_otp,
-            "number": formatted_phone
-        }
-
-        try:
-            req = urllib.request.Request(
-                "https://sms.arkesel.com/api/otp/verify",
-                data=json.dumps(payload).encode("utf-8"),
-                headers={
-                    "api-key": ARKESEL_API_KEY,
-                    "Content-Type": "application/json"
-                },
-                method="POST"
-            )
-            with urllib.request.urlopen(req, timeout=10) as response:
-                res_body = json.loads(response.read().decode("utf-8"))
-                
-                if res_body.get("status") == "success" and client_data:
-                    client = Client.objects.create(
-                        first_name=client_data["first_name"],
-                        last_name=client_data["last_name"],
-                        phone_number=client_data["phone_number"],
-                        email=client_data["email"],
-                        id_number=client_data["id_number"],
-                        address=client_data["address"],
-                    )
-                    request.session.pop("pending_client_data", None)
-                    messages.success(request, f"Client {client.first_name} verified successfully!")
-                    return redirect("client_list")
-        except Exception as e:
-            print(f"VERIFY OTP ERROR: {e}")
-
-        messages.error(request, "Invalid or expired verification code.")
-
-    return render(request, "clients/verify_otp.html")
-
-def client_list(request):
-    clients = Client.objects.all().order_by("-id")
-    return render(request, "clients/client_list.html", {"clients": clients})
-
-def client_detail(request, pk):
-    client = get_object_or_404(Client, pk=pk)
-    return render(request, "clients/client_detail.html", {"client": client})
