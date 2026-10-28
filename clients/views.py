@@ -13,14 +13,17 @@ def format_ghana_phone(phone):
         return "233" + phone[1:]
     return phone
 
+@login_required(login_url='/admin/login/')
 def client_list(request):
     clients = Client.objects.all()
     return render(request, "clients/client_list.html", {"clients": clients})
 
+@login_required(login_url='/admin/login/')
 def client_detail(request, pk):
     client = get_object_or_404(Client, pk=pk)
     return render(request, "clients/client_detail.html", {"client": client})
 
+@login_required(login_url='/admin/login/')
 def register_borrower(request):
     if request.method == "POST":
         try:
